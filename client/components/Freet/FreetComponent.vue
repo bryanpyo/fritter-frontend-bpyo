@@ -9,6 +9,11 @@
       <h3 class="author">
         @{{ freet.author }}
       </h3>
+      <p class="info">
+      <button @click="viewFreet">
+          View Fame 
+        </button>
+      </p>
       <div
         v-if="$store.state.username === freet.author"
         class="actions"
@@ -82,6 +87,12 @@ export default {
     };
   },
   methods: {
+    viewFame(){
+      const params = {
+        method: 'GET'
+      }
+      this.request(params);
+    },
     startEditing() {
       /**
        * Enables edit mode on this freet.
