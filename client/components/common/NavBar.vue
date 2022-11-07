@@ -1,7 +1,7 @@
 <!-- A basic navigation bar component -->
 <!-- Example of a component which is included on all pages (via App.vue) -->
 <!-- This navbar takes advantage of both flex and grid layouts for positioning elements; feel free to redesign as you see fit! -->
-
+<!--  -->
 <template>
   <nav>
     <div class="left">

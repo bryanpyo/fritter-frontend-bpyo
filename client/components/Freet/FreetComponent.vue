@@ -9,11 +9,11 @@
       <h3 class="author">
         @{{ freet.author }}
       </h3>
-      <p class="info">
+      <!-- <p class="info">
       <button @click="viewFreet">
           View Fame 
         </button>
-      </p>
+      </p> -->
       <div
         v-if="$store.state.username === freet.author"
         class="actions"
