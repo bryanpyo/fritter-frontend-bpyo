@@ -5,7 +5,7 @@
   <main>
     <section>
       <header>
-        <h2>Follow a User</h2>
+        <h2>Following Options</h2>
       </header>
       <FollowUserForm />
     </section>
@@ -14,6 +14,7 @@
 
 <script>
 import FollowUserForm from '@/components/Follow/FollowUserForm.vue';
+// import FollowUserForm from '@/components/Follow/FollowUserForm.vue';
 
 export default {
   name: 'FollowerPage',

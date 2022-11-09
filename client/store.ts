@@ -93,11 +93,6 @@ const store = new Vuex.Store({
 
       console.log(state.fames);
       // console.log(state.fames.number);
-
-      
-     
-      
-      
       
     }
   },
