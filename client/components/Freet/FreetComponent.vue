@@ -6,17 +6,61 @@
     class="freet"
   >
     <header>
-      <h3 class="author">
+      <div>
+      <h3 class="u1">
         @{{ freet.author }}
+        <img 
+        v-if="vTier === 'blue'"
+        src="../../public/images/blue.png" alt="blue verifiation" class="verificationIcon">
+        <img 
+        v-else-if="vTier === 'silver'"
+        src="../../public/images/silver.png" alt="blue verifiation" class="verificationIcon">
+        <img 
+        v-else
+        src="../../public/images/none.png" alt="blue verifiation" class="verificationIcon">
       </h3>
-      <div class="tooltip">@{{ freet.author }}
+      </div>
+
+      <div>
+        {{$store.state.vTiers}}
+      </div>
+      <div>
+        <button>
+          {{$store.getters.getVTier("111")}}
+        </button>
+      </div>
+
+      <!-- <div class="tooltip">@{{ freet.author }}
         <span class="tooltiptext">User Information: &#013; Fritter Fame: {{this.fame}} Follow
           <div class = "tooltip"> testing
             <span class="tooltiptext">woohoo
             </span>
           </div>
         </span>
-      </div> 
+      </div>  -->
+
+      <div>
+        <span
+          v-if="fameVisible"
+        >
+          {{freet.author}}'s Fritter Fame: {{this.fame}}
+        </span>
+        <button 
+          v-if="fameVisible"
+          class="link2"
+          @click="hideFame"
+          >
+          Hide Fame
+        </button>
+        <button 
+          v-else
+          class="link"
+          @click="updateAndShowFame(freet.author)"
+          >
+          Show Fame
+        </button>
+        
+      </div>
 
       <!-- <p class="info">
       <button @click="viewFreet">
@@ -93,7 +137,9 @@ export default {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
       alerts: {}, // Displays success/error messages encountered during freet modification
-      fame: 0
+      fameVisible: false, 
+      fame: 0,
+      vTier: "none"
     };
   }, 
   // computed/\
@@ -154,6 +200,56 @@ export default {
         }
       };
       this.request(params);
+    },
+    printConsole() {
+      console.log("working!");
+    },
+    showFame() {
+      this.fameVisible=true;
+    },
+    hideFame() {
+      this.fameVisible=false;
+    },
+    async updateAndShowFame(author){
+      const options = {
+        method: 'GET', headers: {'Content-Type': 'application/json'}
+      };
+      try {
+        const userInfoUrl = `/api/users/${author}`;
+        const userInfo = await fetch(userInfoUrl).then(async r => r.json());
+        try {
+          const fame = await fetch(`/api/fame/${userInfo.user._id}`, options).then((r) => r.json());
+          this.fame = fame.fame;
+          this.$store.commit('refreshFreets');
+          this.fameVisible=true;
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+    },
+    async updateFame(author){
+      const options = {
+        method: 'GET', headers: {'Content-Type': 'application/json'}
+      };
+      try {
+        const userInfoUrl = `/api/users/${author}`;
+        const userInfo = await fetch(userInfoUrl).then(async r => r.json());
+        try {
+          const fame = await fetch(`/api/fame/${userInfo.user._id}`, options).then((r) => r.json());
+          this.fame = fame.fame;
+          this.$store.commit('refreshFreets');
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
     },
     async request(params) {
       /**
@@ -222,4 +318,37 @@ export default {
   visibility: visible;
 }
 
+button.link {background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  margin: 4px 2px;
+  border-radius: 20%;
+}
+
+button.link2 {background-color: #808080;
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  margin: 4px 2px;
+  border-radius: 20%;
+}
+
+.u1 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+}
+
+img.verificationIcon{
+  width: 30px;
+  height: 100%;
+}
 </style>
