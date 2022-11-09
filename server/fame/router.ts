@@ -54,6 +54,7 @@ router.get(
     const response = await FameCollection.findOne(req.params.userId);
     res.status(200).json({
       message: `The fame for ${user.username} is ${response.fame_num}.`,
+      fame: response.fame_num
     });
   }
 );

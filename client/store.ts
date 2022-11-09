@@ -12,7 +12,8 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+    fames: {}
   },
   mutations: {
     alert(state, payload) {
@@ -45,6 +46,11 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+    addFame(state, { id, fame }) {
+      console.log(id, fame);
+      //state.dict[key] = value;
+      Vue.set(state.fames, id, fame);
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
@@ -52,8 +58,54 @@ const store = new Vuex.Store({
       const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
+
+      const fameUrl = `/api/users/session`;
+      const res2 = await fetch(fameUrl).then(async r => r.json());
+
+      console.log("alive");
+      // const allUsersUrls = `/api/users/`;
+      // const allUsers = await fetch(allUsersUrls).then(async r => r.json());
+      console.log("still Alive");
+      console.log(fameUrl);
+      console.log(res);
+      
+      console.log(res2.user);
+      console.log(res2.user._id);
+      console.log(state.fames);
+      // console.log(allUsers);
+
+      for (let i = 0; i < res.length; i++){
+        console.log(res[i]);
+        const userInfoUrl = `/api/users/${res[i].author}`;
+        const userInfo = await fetch(userInfoUrl).then(async r => r.json());
+        // console.log(userInfo.user._id);
+        const fameUrl = `/api/fame/${userInfo.user._id}`;
+        const fame = await fetch(fameUrl).then(async r => r.json());
+        // let userId: string = userInfo.user._id;
+        // console.log(fame);
+        Vue.set(state.fames, userInfo.user._id, fame.fame);
+          
+        
+        
+        
+      }
+      Vue.delete(state.fames, "testing");
+
+      console.log(state.fames);
+      // console.log(state.fames.number);
+
+      
+     
+      
+      
+      
     }
   },
+  // getters: {
+  //   getFame: state => (id: number) =>{
+  //     return state.fames.find(fames => fames.id === id)
+  //   }
+  // },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
 });

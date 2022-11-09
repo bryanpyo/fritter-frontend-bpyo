@@ -9,6 +9,15 @@
       <h3 class="author">
         @{{ freet.author }}
       </h3>
+      <div class="tooltip">@{{ freet.author }}
+        <span class="tooltiptext">User Information: &#013; Fritter Fame: {{this.fame}} Follow
+          <div class = "tooltip"> testing
+            <span class="tooltiptext">woohoo
+            </span>
+          </div>
+        </span>
+      </div> 
+
       <!-- <p class="info">
       <button @click="viewFreet">
           View Fame 
@@ -83,9 +92,12 @@ export default {
     return {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {} // Displays success/error messages encountered during freet modification
+      alerts: {}, // Displays success/error messages encountered during freet modification
+      fame: 0
     };
-  },
+  }, 
+  // computed/\
+  // life cycle hooks
   methods: {
     viewFame(){
       const params = {
@@ -175,6 +187,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style scoped>
@@ -183,4 +196,30 @@ export default {
     padding: 20px;
     position: relative;
 }
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
 </style>

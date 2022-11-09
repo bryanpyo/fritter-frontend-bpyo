@@ -169,4 +169,25 @@ router.delete(
   }
 );
 
+router.get(
+  '/',
+  [],
+  async (req: Request, res: Response) => {
+    const allUsers = await UserCollection.findAll();
+    return allUsers;
+  }
+);
+
+router.get(
+  '/:userId?',
+  [],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUsername(req.params.userId);
+    req.params.userId = user._id.toString();
+    res.status(201).json({
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
 export {router as userRouter};
