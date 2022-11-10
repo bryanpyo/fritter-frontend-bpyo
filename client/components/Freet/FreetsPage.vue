@@ -56,6 +56,12 @@
         <h3>No freets found.</h3>
       </article>
     </section>
+    <!-- <section>
+      <button
+      class="createButton">
+        Create a New Freet!
+      </button>
+    </section> -->
   </main>
 </template>
 
@@ -69,11 +75,16 @@ export default {
   components: {FreetComponent, GetFreetsForm, CreateFreetForm},
   mounted() {
     this.$refs.getFreetsForm.submit();
+    this.$store.commit('refreshFreets');
   }
 };
 </script>
 
 <style scoped>
+main{
+  background-image: url('../../public/images/cloudBack.jpg');
+}
+
 section {
   display: flex;
   flex-direction: column;
@@ -93,5 +104,18 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+}
+
+.createButton {
+    font-size: 50px; 
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    display:block;
+    height: 200px;
+    width: 200px;
+    border: 3px solid black;
+    border-radius: 12px;
 }
 </style>

@@ -47,8 +47,10 @@
 
 <style scoped>
 nav {
+  font-family: Arial, Helvetica, sans-serif;
     padding: 1vw 2vw;
-    background-color: #ccc;
+    background-color: #6ad0f6;
+    border: 5px solid rgb(255, 255, 255);
     display: flex;
     justify-content: space-between;
     align-items: center;

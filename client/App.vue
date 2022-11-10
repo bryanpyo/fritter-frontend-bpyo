@@ -34,6 +34,7 @@ export default {
 }
 
 body {
+  font-family: Arial, Helvetica, sans-serif;
   height: 100vh;
   flex-direction: column;
   display: flex;
@@ -44,6 +45,7 @@ body {
 
 main {
   padding: 0 5em 5em;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .alerts {

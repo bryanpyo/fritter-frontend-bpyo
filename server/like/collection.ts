@@ -16,6 +16,12 @@ class LikeCollection {
   static async findOne(user: Types.ObjectId | string, liked_freet: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
     return LikeModel.findOne({user: user, liked_freet: liked_freet}).populate('user');
   }
+
+  static async getNumLikes(freetId: Types.ObjectId | string): Promise<number> {
+    return (await LikeModel.find({liked_freet: freetId}).populate('user')).length;
+  }
+
+  
 }
 
 export default LikeCollection;

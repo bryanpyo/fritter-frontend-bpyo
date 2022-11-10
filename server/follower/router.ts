@@ -30,7 +30,8 @@ router.put(
     const userId = (req.session.userId as string) ?? '';
     const user = await FollowerCollection.addOne(userId, req.params.followingId);
     res.status(201).json({
-      message: `You have succesfully followed ${req.params.followingId}`
+      message: `You have succesfully followed ${req.params.followingId}`,
+      successful: true
     });
   }
 );
@@ -53,7 +54,8 @@ router.delete(
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await FollowerCollection.deleteOne(userId, req.params.followingId);
     res.status(200).json({
-      message: `You have succesfully unfollowed ${req.params.followingId}`
+      message: `You have succesfully unfollowed ${req.params.followingId}`,
+      successful: true
     });
   }
 );

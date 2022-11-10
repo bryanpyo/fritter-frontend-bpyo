@@ -39,6 +39,7 @@ router.get(
     const response = await TierCollection.findOne(req.params.userId);
     res.status(200).json({
       message: `The tier for ${user.username} is ${response.tier}.`,
+      vTier: response.tier
     });
   }
 );

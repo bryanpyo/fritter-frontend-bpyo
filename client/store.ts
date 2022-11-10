@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     username: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     fames: {},
-    vTiers: []
+    vTiers: [],
+    likes: []
     // var persons: { [id: string] : IPerson; } = {};
   },
   mutations: {
@@ -53,6 +54,21 @@ const store = new Vuex.Store({
       //state.dict[key] = value;
       Vue.set(state.fames, id, fame);
     },
+    resetTier(state) {
+      Vue.set(state, 'vTiers', []);
+    },
+    smallLike(state, freet) {
+      let likeIndex = state.likes.findIndex(x => x.freetId == freet);
+
+      const numLikes = this.getLikes(freet)
+
+      if (likeIndex === -1){
+        state.likes.push({freetId: freet, likes: numLikes});
+      } else{
+        Vue.delete(state.likes, likeIndex);
+        state.likes.push({freetId: freet, likes: numLikes+1});
+      }
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
@@ -63,53 +79,51 @@ const store = new Vuex.Store({
 
       const fameUrl = `/api/users/session`;
       const res2 = await fetch(fameUrl).then(async r => r.json());
-
-      console.log("alive");
-      // const allUsersUrls = `/api/users/`;
-      // const allUsers = await fetch(allUsersUrls).then(async r => r.json());
-      // console.log("still Alive");
-      // console.log(fameUrl);
-      // console.log(res);
-      
-      // console.log(res2.user);
-      // console.log(res2.user._id);
-      // console.log(state.fames);
-      // console.log(allUsers);
-
+      console.log("START LOOP");
       for (let i = 0; i < res.length; i++){
-        // console.log(res[i]);
         const userInfoUrl = `/api/users/${res[i].author}`;
         const userInfo = await fetch(userInfoUrl).then(async r => r.json());
-        // console.log(userInfo.user._id);
+
         const fameUrl = `/api/fame/${userInfo.user._id}`;
         const fame = await fetch(fameUrl).then(async r => r.json());
-        // let userId: string = userInfo.user._id;
-        // console.log(fame);
         Vue.set(state.fames, userInfo.user._id, fame.fame);
 
         const vTierUrl = `/api/tiers/${userInfo.user._id}`;
-        const vTier = await fetch(vTierUrl);
-        console.log("VTIER FOR ");
-        console.log(`${res[i].author}`);
-        console.log(vTier);
+        const vTier = await fetch(vTierUrl).then(async r => r.json());
 
-        state.vTiers.push({id: res[i].author, vTier: vTier})
+        let index = state.vTiers.findIndex(x => x.id == res[i].author);
+
+        if (index === -1){
+          state.vTiers.push({id: res[i].author, vTier: vTier.vTier});
+        }
+
+        const likeUrl = `/api/likes/${res[i]._id}`;
+        const likeInfo = await fetch(likeUrl).then(async r => r.json());
+
+        let likeIndex = state.likes.findIndex(x => x.freetId == res[i]._id);
+
+        if (likeIndex === -1){
+          state.likes.push({freetId: res[i]._id, likes: likeInfo.numLikes});
+        } else{
+          Vue.delete(state.likes, likeIndex);
+          state.likes.push({freetId: res[i]._id, likes: likeInfo.numLikes});
+        }
       }
       Vue.delete(state.fames, "testing");
-
-      console.log(state.fames);
-      state.vTiers.push({id: "111", vTier: "blue"});
-      state.vTiers.push({id: "222", vTier: "silver"});
-      state.vTiers.push({id: "89", vTier: "none"});
-      console.log(state.vTiers);
-      // console.log(state.fames.number);
-      
     }
   },
   getters: {
     getVTier: (state) => (username) => {
-      // return state.vTiers.filter(item => item.toLowerCase().includes(filter)).length;
-      return state.vTiers.filter(item => item.id == username);
+      let x = state.vTiers.filter(item => item.id == username)[0];
+      if (x){
+        return x.vTier;
+      }
+    },
+    getLikes: (state) => (freet) => {
+      let x = state.likes.filter(item => item.freetId == freet)[0];
+      if (x){
+        return x.likes;
+      }
     }
   //   getFame: state => (id: string) =>{
   //     return state.fames[id];

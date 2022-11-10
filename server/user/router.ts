@@ -183,10 +183,19 @@ router.get(
   [],
   async (req: Request, res: Response) => {
     const user = await UserCollection.findOneByUsername(req.params.userId);
-    req.params.userId = user._id.toString();
-    res.status(201).json({
-      user: util.constructUserResponse(user)
-    });
+    console.log('woohoo');
+    console.log(user);
+    if (user){
+      req.params.userId = user._id.toString();
+      res.status(201).json({
+        user: util.constructUserResponse(user)
+      });
+    }else{
+      res.status(200).json({
+        message: 'User does not exist', 
+        errorNum: 2
+      });
+    }
   }
 );
 

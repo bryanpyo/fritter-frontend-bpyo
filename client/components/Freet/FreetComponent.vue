@@ -10,10 +10,10 @@
       <h3 class="u1">
         @{{ freet.author }}
         <img 
-        v-if="vTier === 'blue'"
+        v-if="this.$store.getters.getVTier(freet.author) === 'BLUE'"
         src="../../public/images/blue.png" alt="blue verifiation" class="verificationIcon">
         <img 
-        v-else-if="vTier === 'silver'"
+        v-else-if="this.$store.getters.getVTier(freet.author) === 'SILVER'"
         src="../../public/images/silver.png" alt="blue verifiation" class="verificationIcon">
         <img 
         v-else
@@ -21,14 +21,21 @@
       </h3>
       </div>
 
-      <div>
+      <!-- <div>
         {{$store.state.vTiers}}
       </div>
       <div>
         <button>
-          {{$store.getters.getVTier("111")}}
+          {{this.$store.getters.getVTier(freet.author)}}
         </button>
       </div>
+
+      <div>
+        <button
+          @click="resetTier">
+          RESET TIERS
+        </button>
+      </div> -->
 
       <!-- <div class="tooltip">@{{ freet.author }}
         <span class="tooltiptext">User Information: &#013; Fritter Fame: {{this.fame}} Follow
@@ -59,14 +66,10 @@
           >
           Show Fame
         </button>
-        
       </div>
 
-      <!-- <p class="info">
-      <button @click="viewFreet">
-          View Fame 
-        </button>
-      </p> -->
+      <hr>
+
       <div
         v-if="$store.state.username === freet.author"
         class="actions"
@@ -106,10 +109,31 @@
     >
       {{ freet.content }}
     </p>
-    <p class="info">
-      Posted at {{ freet.dateModified }}
+    
+
+    <p class="info"
+    style="font-size: 12px;">
+      <i>Posted at {{ freet.dateModified }}</i>
       <i v-if="freet.edited">(edited)</i>
     </p>
+
+    <hr>
+
+    <div
+    class="flex-container">
+      <!-- <button 
+      class="medium-btn"
+      @click="reFreet">
+        <img src="../../public/images/retweet-icon-25568.png">
+      </button> -->
+      <button 
+      class="medium-btn"
+      style="font-size: 20px"
+      @click="likeFreet(freet._id)">
+        ❤️ {{this.$store.getters.getLikes(freet._id)}}
+      </button>
+
+    </div>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -139,7 +163,7 @@ export default {
       alerts: {}, // Displays success/error messages encountered during freet modification
       fameVisible: false, 
       fame: 0,
-      vTier: "none"
+      vTier: "NONE"
     };
   }, 
   // computed/\
@@ -179,6 +203,9 @@ export default {
       };
       this.request(params);
     },
+    resetTier(){
+      this.$store.commit('resetTier');
+    },
     submitEdit() {
       /**
        * Updates freet to have the submitted draft content.
@@ -209,6 +236,37 @@ export default {
     },
     hideFame() {
       this.fameVisible=false;
+    },
+    async likeFreet(author) {
+      const options = {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}
+      };
+      try {
+        const freetInfoUrl = `/api/likes/${this.freet._id}`;
+        const freetInfo = await fetch(freetInfoUrl, options).then(async r => r.json());
+        console.log(freetInfo);
+        this.$store.commit('refreshFreets');
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+    },
+    async smallLikeFreet(freet) {
+      this.$store.commit('smallLike', freet);
+    },
+    async reFreet() {
+      const options = {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}
+      };
+      try {
+        const freetInfoUrl = `/api/likes/${this.freet._id}`;
+        const freetInfo = await fetch(freetInfoUrl, options).then(async r => r.json());
+        console.log(freetInfo);
+        this.$store.commit('refreshFreets');
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
     },
     async updateAndShowFame(author){
       const options = {
@@ -289,8 +347,10 @@ export default {
 <style scoped>
 .freet {
     border: 1px solid #111;
+    border-radius: 25px;
     padding: 20px;
     position: relative;
+    background-color: white;
 }
 
 .tooltip {
@@ -351,4 +411,17 @@ img.verificationIcon{
   width: 30px;
   height: 100%;
 }
+
+.flex-container {
+  column-gap: 20px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.medium-btn {
+        width: 120px;
+        height: 40px;
+    }
+
 </style>
