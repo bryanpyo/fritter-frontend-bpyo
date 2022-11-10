@@ -20,6 +20,12 @@
       >
         Follow
     </router-link>
+    <router-link
+        v-if="$store.state.username"
+        to="/verification"
+      >
+        Verification
+      </router-link>
       <router-link
         v-if="$store.state.username"
         to="/account"

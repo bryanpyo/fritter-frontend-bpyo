@@ -5,7 +5,7 @@
   <main>
     <section>
       <header>
-        <h2>Following Options</h2>
+        <h2>Verification Options</h2>
       </header>
       <FollowUserForm />
     </section>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import FollowUserForm from '@/components/Follow/FollowUserForm.vue';
+import FollowUserForm from '@/components/Verification/VerificationForm.vue';
 // import FollowUserForm from '@/components/Follow/FollowUserForm.vue';
 
 export default {
